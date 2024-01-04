@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+        <h3>{{post.post_title}}</h3>
+        <br>
+        <font>Posted By, <b>{{post.post_author.first_name}} {{post.post_author.last_name}}</b> </font>
+        <font style="margin-left: 10px;">Published At: {{post.date_published}}
+        </font>
+        <font style="margin-left: 10px;">Category: {{post.post_category.cat_name}}</font>
+        <br> <br>
+        <img src="{{post.post_thumbnail_img}}" class="img-fluid" alt="...">
+        <br> <br>
+
+        <!-- post's body -->
+        <p class="fs-5">
+            {{post.post_body}}
+        </p>
+        <img src="{{post.post_body_img}}" class="img-fluid" alt="...">
+
+        <br>
+        <br>
+        
+        <form action="{% url 'postlike' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="postid" value="{{post.id}}" required>
+            {% if post.likes.count == 0 %} <button class="btn btn-primary">Like</button> {% endif %}
+        {% if post.likes.count > 0 %} <button class="btn btn-success">{{post.likes.count}} Likes</button> {% endif %}
+        </form>
+
+        <br>
+        <br>
+
+        <!-- commnets -->
+        <br>
+
+        <!-- Comments section-->
+
+        <section class="mb-5">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <!-- Comment form-->
+
+                    <!-- Single comment-->
+                    {% for x in comment %}
+                    <div class="d-flex">
+                        <div class="flex-shrink-0"><img class="rounded-circle"
+                                src="https://www.pngimages.in/uploads/png-webp/2022/2022-October/anime_stickers_Logo.webp"
+                                alt="..." style="max-height: 50px;max-width: 50px;" /></div>
+                        <div class="ms-3">
+                            <div class="fw-bold">{{x.comment_author_name}}</div>
+                            {{x.comment}}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <br>
+
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+                <form action="{% url 'comment_box' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="postid" value="{{post.id}}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" name="name" id="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input type="email" class="form-control" name="email" id="exampleInputEmail1"
+                            aria-describedby="emailHelp">
+                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="comment" class="form-label">Drop your comment</label>
+                        <textarea class="form-control" name="comment" id="comment" rows="5"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Comment</button>
+                </form>
+            </div>
+            <div class="col-1"></div>
+        </div>
+
+    </div>
+    <div class="col-2"></div>
+</div>
+
+{% endblock %}

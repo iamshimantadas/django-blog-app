@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+{% for x in post %}
+
+<div class="row">
+    <div class="col-1"></div>
+    <div class="col-3">
+        <img src="{{x.post_thumbnail_img}}" class="img-fluid" alt="Responsive image" style="">
+    </div>
+    <div class="col-6">
+        <h4>{{x.post_title}}</h4>
+        <font>
+            Post By, {{x.post_author.first_name}} {{x.post_author.last_name}}
+            <br>
+            Published: {{x.date_published}}
+            <br> 
+            Category: {{x.post_category.cat_name}}
+            <br> <br>
+            {{ x.post_body | truncatechars:200 }}
+        </font>
+
+        <form method="get" action="{% url 'post-view' %}">
+            <input type="hidden" name="postid" value="{{x.id}}">
+            <button type="submit" style="border: 2px solid white;background-color: white;color: blue;">
+                Read More
+            </button>
+        </form>
+
+    </div>
+    <div class="col-1"></div>
+</div>
+<br>
+{% endfor %}
+
+
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8">
+
+        {%if post.has_previous %}
+        <a href="?page={{post.previous_page_number}}">
+            <button class="btn btn-primary">Previous</button>
+        </a>
+    {% endif %}
+    <span>{{page_obj.number}}</span> {# the current page number #}
+   
+    {%if post.has_next %} {# whether the next page exists #}
+        <a href="?page={{post.next_page_number}}">
+            <button class="btn btn-primary" style="margin-left: 30px;">Next</button>
+        </a>
+    {% endif %}
+
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<br>
+<br>
+
+
+{% endblock %}

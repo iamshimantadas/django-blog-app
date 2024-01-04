@@ -1,0 +1,95 @@
+{% extends "account_base.html" %}
+
+{% block sidebar %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Posts</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+<body>
+
+    <div class="content">
+        <div class="row">
+            <div class="col-1"></div>
+            <div class="col-10">
+
+                <br>
+                <br>
+
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">POST NAME</th>
+                        <th scope="col">DESCRIPTION</th>
+                        <th scope="col">SUBMITTED AT</th>
+                        <th>EDIT</th>
+                        <th>DELETE</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        {% for x in post %}
+                      <tr>
+                        <td><b>{{x.post_title}}</b></td>
+                        <td>{{x.post_body | truncatechars:100 }}</td>
+                        <td>{{x.date_published}}</td>
+                        <td>
+                            <form action="{% url 'edit_post' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="postid" value="{{x.id}}">
+                             <button class="btn btn-warning" type="submit">Edit</button> 
+                            </form>
+                            </td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteAction('{{x.id}}')" data-bs-toggle="modal" data-bs-target="#deleteModal">Delete</button>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+
+            </div>
+            <div class="col-1"></div>
+        </div>
+    </div>
+
+
+      <!-- delete modal box -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Alert!</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <h4>Are You want to delete this post ?</h4>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <form action="{% url 'deletepost' %}" method="post">
+                {%  csrf_token %}
+                <input type="hidden" name="deletepostid" id="deletepostid" required>
+              <button type="submit" class="btn btn-danger">Delete Post</button>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>    
+
+
+    <script>
+        function deleteAction(postid){
+            console.error("error button clicked! ");
+            $('#deletepostid').val(postid);
+        }
+    </script>
+
+</body>
+</html>
+
+{% endblock %}
